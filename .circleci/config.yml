@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  beta:
+    macos:
+      xcode: "11.2.0"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+           - gem-{{ checksum "proj.ios_mac/Gemfile.lock" }}
+           - gem # チェックサムが変わった時はこちらが使われる
+      - run: cd proj.ios_mac && bundle install --path=vendor/bundle
+      - run: cd proj.ios_mac && bundle exec fastlane beta
+      - save_cache:
+          key: gem-{{ checksum "proj.ios_mac/Gemfile.lock" }}
+          paths:
+            - "proj.ios_mac/.bundle"
+            - "proj.ios_mac/vendor/bundle"
+workflows:
+  version: 2
+  build_flow:
+    jobs:
+      - beta

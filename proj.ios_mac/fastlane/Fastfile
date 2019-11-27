@@ -1,0 +1,23 @@
+fastlane_version "2.134.0"
+
+default_platform :ios
+
+lane :beta do
+  setup_circle_ci
+  # match
+  match(type: "development", readonly: true)
+
+  # build
+  build_ios_app(
+    scheme: "MyGame-mobile",
+    export_method: "development"
+  )
+
+  # upload to deploygate
+  deploygate(
+    api_token: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    user: 'junki-hiroi',
+    message: "Fastlane build #{lane_context[SharedValues::BUILD_NUMBER]}",
+  )
+end
+
